@@ -22,8 +22,8 @@ export default function CreatePost() {
       return;
     }
 
-    if(!art.description || art.description.length > 200){
-      setError("Description must be more then 30 characters");
+    if(!art.description || art.description.length <= 30){
+      setError("Description must be atleast 30 characters");
       return;
     }
   
