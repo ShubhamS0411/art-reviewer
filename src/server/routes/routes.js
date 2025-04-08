@@ -7,6 +7,11 @@ import createReview from '../api/review.js';
 import { refreshToken } from '../security/security.js';
 import Authentication from '../api/authentication.js';
 import { logout } from '../api/logout.js';
+import upload from '../FileManager/Multer.js';
+import cloudinary from '../FileManager/CloudanaryConfig.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 
 
@@ -32,6 +37,23 @@ router.get('/authentication', Authentication);
 router.post('/refresh', refreshToken);
 router.get('/getPost', rateLimiter2, getPosts);
 router.post('/logout', logout);
+router.post('/upload', upload.single('file'), async(req, res) => {
+    
+    try {
+        
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+            
+            const secure_url = req.file.path;
+            
+         
+            res.status(200).json({ message: 'File uploaded successfully', secure_url});
+    } catch (error) {
+        
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 router.use((error, req, res, next) => {
     res.status(500).json({ message: error.message });
     

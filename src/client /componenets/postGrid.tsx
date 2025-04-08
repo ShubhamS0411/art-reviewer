@@ -13,7 +13,7 @@ interface Post {
     event: any;
     user: string;
     content: string;
-    file?: string;
+    file: string;
     review?: Review[];
 }
 
@@ -24,6 +24,7 @@ export default function PostGrid() {
     const [error, setError] = useState<{ [key: number]: string }>({});
     const [trigger, setTrigger] = useState<boolean>(false);
     const API_URL = import.meta.env.VITE_REACT_APP_API_URL || "http://localhost:4000";
+    
 
     useEffect(() => {
         axios.get(`${API_URL}/api/getPost`, { withCredentials: true })
@@ -83,9 +84,10 @@ export default function PostGrid() {
                             <p className="mt-3 text-black text-base font-medium">{post.content}</p>
 
                             
-                            {post.file && (
+                            {post.file && ( 
                                 <div className="mt-4 w-full">
-                                    <img src={post.file} alt={`Attached media ${post.user}`} className="rounded-lg w-full h-40 object-cover" loading="lazy"/>
+                                    {post.file.includes('.mp3')|| post.file.includes('.wav') ? <audio src={post.file} controls className="w-full max-w-md mx-auto my-4 rounded-lg overflow-hidden shadow-md bg-gray-100"/> :<img src={post.file} alt={`Attached media ${post.user}`} className="rounded-lg w-full h-40 object-cover" loading="lazy"/>}
+                                    
                                 </div>
                             )}
 

@@ -7,8 +7,9 @@ import cookieParser from 'cookie-parser';
 import compression from 'compression';
 
 
+
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT;
 
 app.use(cookieParser());
 app.use(cors({
@@ -30,6 +31,7 @@ app.use(cors({
 
 app.use(compression());
 app.use(express.json());
+
 
 
 dbConnect();

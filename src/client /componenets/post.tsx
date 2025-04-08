@@ -3,46 +3,63 @@ import { Helmet } from "react-helmet";
 import dompurify from "dompurify";
 import axios from "axios";
 
+
 export default function CreatePost() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [art, setArt] = useState<{title: string, file: File | null}>({ title: "", file: null });
+
   const API_URL = import.meta.env.REACT_APP_API_URL || 'http://localhost:4000';
 
   const [error,setError] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const sanitizedTitle = dompurify.sanitize(art.title.trim());
-    const formData = new FormData();
-    formData.append('file', art.file ?? '');
-    const allowedFileType = ["image/png", "image/jpeg", "image/jpg", "video/mp4", "audio/mp3", "audio/wav",""];
-    if(!allowedFileType.includes(art.file?.type ?? "")){
-       setError("Unsupported File Type");
-       return; 
+  
+    if (!art.title || art.title.length < 20) {
+      setError("Please Elaborate Your Artwork More");
+      return;
     }
-    if(!art.title || !art.title.trim().length || art.title.length < 20){
-        setError("Please Elaborate Your Artwork More");
-        return;
-    }
-    axios.post(`${API_URL}/api/post`, {content: sanitizedTitle, file: formData}, {
+  
+    try {
+      const form = new FormData();
+      form.append("file", art.file!);
+      setError("Processing...");
+  
+      const uploadResponse = await axios.post(`${API_URL}/api/upload`, form, {
         headers: {
-            'Content-Type': 'application/json',
+          "Content-Type": "multipart/form-data",
         },
-        withCredentials: true
-    })
-    .then((res) => {
-        if(res.status === 200) {
-            setArt({title: "", file: new File([], "")});
-            setShowModal(false);
-            setError(res.data.message);
+        withCredentials: true,
+      });
+    
+      const uploadedFileUrl = uploadResponse.data.secure_url;
+  
+      const postResponse = await axios.post(
+        `${API_URL}/api/post`,
+        { content: sanitizedTitle, file: uploadedFileUrl },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
         }
-    })
-    .catch((error) => {
-        setError(error.response.data.message);
-        console.log(error);
-  }
-    );
+      );
+  
+      if (postResponse.status === 201) {
+        setArt({ title: "", file: null });
+        setError(postResponse.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        },2000);
+      }
+    } catch (error: any) {
+      setError(error.response?.data?.message || "An error occurred");
+      console.error(error);
+    }
   };
+  
+
 
   return (
     <>
@@ -74,7 +91,7 @@ export default function CreatePost() {
               <h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">
                 Share Your Art
               </h1>
-              <form className="w-full" onSubmit={handleSubmit}>
+              <form className="w-full" onSubmit={handleSubmit} encType="multipart/form-data" method="post">
                 <div className="flex flex-col space-y-4">
                   <div className="text-left">
                     <label htmlFor="title" className="text-lg font-medium text-gray-700">
@@ -98,9 +115,11 @@ export default function CreatePost() {
                     <input
                       type="file"
                       id="file"
-                      alt="image or video"
+                      name="file"
+                      alt={`${art.title}`}
                       onChange={(e) => setArt({...art, file: e.target.files![0]})}
                       className="w-full border border-gray-300 rounded-md px-4 py-2 file:bg-blue-600 file:text-white file:rounded-md file:px-3 file:py-1.5 file:border-0 hover:file:bg-blue-700 transition-all"
+                     
                     />
                   </div>
 

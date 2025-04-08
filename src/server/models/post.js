@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema({
     content: {type: String, required: true},
-    file: {type: String, required: false},
+    file: {type: String, required: true},
     user: {type: String, required: true},
     review: [
         {
