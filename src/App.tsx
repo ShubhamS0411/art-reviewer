@@ -1,5 +1,5 @@
 import Routing from "./routes/routes";
-import { ContextProvider } from "./client /state/Context";
+import { ContextProvider, ContextProviderPDP} from "./client /state/Context";
 
 
 
@@ -9,7 +9,9 @@ function App() {
   return (
     <>
     <ContextProvider>
+    <ContextProviderPDP>
   <Routing/>
+    </ContextProviderPDP>
     </ContextProvider>
     </>
   )

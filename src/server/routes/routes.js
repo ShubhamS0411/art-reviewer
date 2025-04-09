@@ -8,8 +8,8 @@ import { refreshToken } from '../security/security.js';
 import Authentication from '../api/authentication.js';
 import { logout } from '../api/logout.js';
 import upload from '../FileManager/Multer.js';
-import cloudinary from '../FileManager/CloudanaryConfig.js';
 import dotenv from 'dotenv';
+import  PDP  from '../api/pdp.js';
 
 dotenv.config();
 
@@ -37,6 +37,7 @@ router.get('/authentication', Authentication);
 router.post('/refresh', refreshToken);
 router.get('/getPost', rateLimiter2, getPosts);
 router.post('/logout', logout);
+router.post('/pdp/:id', PDP)
 router.post('/upload', upload.single('file'), async(req, res) => {
     
     try {

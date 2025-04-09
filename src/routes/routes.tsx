@@ -8,6 +8,7 @@ const Homepage = lazy(() => import("../client /pages/Homepage"));
 const Signin = lazy(() => import("../client /componenets/signin"));
 const Signup = lazy(() => import("../client /componenets/signup"));
 const Dashboard = lazy(() => import("../client /pages/dashboard"));
+const PDP = lazy(() => import("../client /pages/PDP"));
 
 export default function Routing(){
 
@@ -32,6 +33,7 @@ export default function Routing(){
         <Route path="/signup" element={<Signup/>} />
         <Route path="/dashboard" element={<Dashboard /> } />
         <Route path="*" element={<Homepage/>}/>
+        <Route path="/post/:id" element={<PDP/>} />
       </Routes>
       </Layout>
       </Suspense>

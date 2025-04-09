@@ -3,6 +3,9 @@ import { useEffect, useState, useCallback } from "react";
 import dompurify from "dompurify";
 import Post from "./post";
 import Helmet from "react-helmet";
+import { Link } from "react-router-dom";
+import { useContext  } from "react";
+import { pdpID } from "../state/Context";
 
 interface Review {
     username: string;
@@ -24,6 +27,7 @@ export default function PostGrid() {
     const [review, setReview] = useState<{ [key: number]: string }>({});
     const [error, setError] = useState<{ [key: number]: string }>({});
     const [trigger, setTrigger] = useState<boolean>(false);
+    const { setId } = useContext(pdpID);
     const API_URL = import.meta.env.VITE_REACT_APP_API_URL || "http://localhost:4000";
     
 
@@ -85,18 +89,27 @@ export default function PostGrid() {
                     key={index}
                     className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 flex flex-col items-start space-y-4"
                   >
+                     <Link to={`/post/${post._id}`} onClick={() => setId(post._id)}>
                     <div className="self-center bg-gray-200 px-4 py-2 rounded-full shadow-sm text-center font-semibold text-gray-800 text-lg">
                       {post.user}
                     </div>
       
-                    <h2 className="text-xl font-bold text-gray-900 w-full break-words text-center">
+                    <h2 className="text-xl font-bold text-gray-900 w-full break-words text-center mt-2">
                       {post.content}
                     </h2>
       
-                    <p className="text-gray-700 text-sm w-full text-left">
-                      {post.description}
-                    </p>
-      
+                    <p className="text-gray-700 text-sm w-full text-left mt-2">
+                    
+  {post.description && post.description.length > 100 ? (
+    <>
+      {post.description.substring(0, 100)}
+      <span className="text-blue-600 cursor-pointer">show more</span>
+    </>
+  ) : (
+    post.description
+  )}
+</p>
+                     </Link>
                     {post.file && (
                       <div className="w-full">
                         {post.file.includes(".mp3") || post.file.includes(".wav") ? (
@@ -104,18 +117,20 @@ export default function PostGrid() {
                             src={post.file}
                             controls
                             className="w-full rounded-md mt-2 bg-gray-100 shadow-inner"
-                          />
+                          /> 
                         ) : (
+                          <Link to={`/post/${post._id}`} onClick={() => setId(post._id)}>
                           <img
                             src={post.file}
                             alt={`Artwork by ${post.user}`}
                             className="w-full h-48 object-cover rounded-md shadow-sm border"
                             loading="lazy"
                           />
+                          </Link>
                         )}
                       </div>
                     )}
-      
+                       
                     {post.review && post.review.length > 0 && (
                       <div className="w-full mt-4">
                         <h3 className="text-lg font-semibold text-gray-800 mb-2">
