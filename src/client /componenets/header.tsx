@@ -21,7 +21,7 @@ const Header = function Header() {
 
     }
    
-    console.log(status)
+    
     return (
         <>
         
@@ -42,6 +42,7 @@ const Header = function Header() {
                     </h1>
                     </Link>
                     <nav className="flex gap-4">
+                    {status && location.pathname !== '/dashboard' && <Link to={'/dashboard'}><button className="p-2 rounded-md bg-orange-500 hover:bg-orange-600 transition-colors duration-200">Dashboard</button></Link>}
                         <button
                             onClick={() => navigate("/signin")}
                             className="px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium"
@@ -49,6 +50,7 @@ const Header = function Header() {
                         >
                            {status ? <div onClick={handleLogout}>Logout</div> : <div>Signin</div>} 
                         </button>
+                        
                         { !status &&
                         <button
                             onClick={() => navigate("/signup")}

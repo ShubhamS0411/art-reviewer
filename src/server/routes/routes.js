@@ -10,6 +10,7 @@ import { logout } from '../api/logout.js';
 import upload from '../FileManager/Multer.js';
 import dotenv from 'dotenv';
 import  PDP  from '../api/pdp.js';
+import userCheck from '../api/userCheck.js';
 
 dotenv.config();
 
@@ -35,9 +36,10 @@ router.post('/post',rateLimiter2, express.json({ limit: '50mb'}), createPost);
 router.post('/review',rateLimiter2,express.json({ limit: '1mb'}), createReview);
 router.get('/authentication', Authentication);
 router.post('/refresh', refreshToken);
-router.get('/getPost', rateLimiter2, getPosts);
+router.get('/getPost', getPosts);
 router.post('/logout', logout);
-router.post('/pdp/:id', PDP)
+router.post('/pdp/:id', PDP);
+router.get('/userCheck', userCheck);
 router.post('/upload', upload.single('file'), async(req, res) => {
     
     try {

@@ -5,6 +5,7 @@ const commentSchema = new mongoose.Schema({
     file: {type: String, required: true},
     user: {type: String, required: true},
     description: {type: String, required: true},
+    category: {type: String, required: true},
     review: [
         {
             username: { type: String, required: true },

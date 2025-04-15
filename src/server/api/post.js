@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 
 export async function createPost (req,res){
     try{
-    const {content, description, file} = req.body;
+    const {content, description, file, category} = req.body;
    
     const accessToken = req.cookies.accessToken;
  
@@ -42,7 +42,7 @@ export async function createPost (req,res){
         return res.status(400).json({message: "User does not exist"});
     }
     
-    const newPost = new postModel({ content: updatedContent, description: updatedDescription, user: userExsists.username, file: file });
+    const newPost = new postModel({ content: updatedContent, description: updatedDescription, user: userExsists.username, file: file, category: category});
     await newPost.save();
     res.status(201).json({message: "Post Created Successfully, Wait For Page To Refresh"});
     }

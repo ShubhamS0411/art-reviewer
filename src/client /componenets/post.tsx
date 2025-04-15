@@ -6,7 +6,7 @@ import axios from "axios";
 
 export default function CreatePost() {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [art, setArt] = useState<{title: string, description: string, file: File | null}>({ title: "", description: "", file: null });
+  const [art, setArt] = useState<{title: string, description: string, category: string, file: File | null}>({ title: "", description: "", category: "", file: null });
 
   const API_URL = import.meta.env.REACT_APP_API_URL || 'http://localhost:4000';
 
@@ -43,7 +43,7 @@ export default function CreatePost() {
   
       const postResponse = await axios.post(
         `${API_URL}/api/post`,
-        { content: sanitizedTitle, description: sanitizedDescription, file: uploadedFileUrl },
+        { content: sanitizedTitle, description: sanitizedDescription, file: uploadedFileUrl, category: art.category },
         {
           headers: {
             "Content-Type": "application/json",
@@ -53,7 +53,7 @@ export default function CreatePost() {
       );
   
       if (postResponse.status === 201) {
-        setArt({ title: "", description: "", file: null });
+        setArt({ title: "", description: "", category: "", file: null });
         setError(postResponse.data.message);
         setTimeout(() => {
           window.location.reload();
@@ -70,16 +70,16 @@ export default function CreatePost() {
   return (
     <>
      <Helmet>
-        <title>Post Your Art</title>
+        <title>Create Post</title>
         <meta name="description" content="Join Art Review to share and review artwork with our creative community"/>
         <meta name="keywords" content="art review, art community, artwork sharing"/>
      </Helmet>
-     <div className="flex justify-center mt-10">
+     <div className="flex md:justify-end justify-center mb-4">
   <button
     onClick={() => setShowModal(true)}
-    className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-300 font-medium shadow-md"
+    className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-300 font-medium shadow-md"
   >
-    Share Your Art
+    + Create Post
   </button>
 </div>
 
@@ -103,6 +103,21 @@ export default function CreatePost() {
           encType="multipart/form-data"
           method="post"
         >
+          <div className="text-left">
+            <label htmlFor="Category" className="block text-lg font-medium text-gray-700 mb-1">
+            Category
+            </label>
+            <select name="Category" id="Category" onChange={(e) => setArt({ ...art, category: e.target.value })} value={art.category} required>
+              <option value="" disabled selected >Choose Category</option>
+              <option value="Painting">Painting</option>
+              <option value="Sculpture">Music</option>
+              <option value="Dance">Dance</option>
+              <option value="Photography">Sports</option>
+              <option value="Digital Art">Digital Art</option>
+            
+            </select>
+          </div>
+
           <div className="text-left">
             <label htmlFor="title" className="block text-lg font-medium text-gray-700 mb-1">
               Artwork Title
