@@ -11,6 +11,7 @@ import upload from '../FileManager/Multer.js';
 import dotenv from 'dotenv';
 import  PDP  from '../api/pdp.js';
 import userCheck from '../api/userCheck.js';
+import { profileEdit } from '../api/profileEdit.js';
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ router.post('/signin', rateLimiter,express.json({ limit: '1kb'}), signin);
 router.post('/signup', rateLimiter,express.json({ limit: '1kb'}), signup);
 router.post('/post',rateLimiter2, express.json({ limit: '50mb'}), createPost);
 router.post('/review',rateLimiter2,express.json({ limit: '1mb'}), createReview);
+router.post('/profileEdit',express.json({ limit: '1mb'}), profileEdit);
 router.get('/authentication', Authentication);
 router.post('/refresh', refreshToken);
 router.get('/getPost', getPosts);

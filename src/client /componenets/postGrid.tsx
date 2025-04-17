@@ -103,7 +103,7 @@ export default function PostGrid() {
 
       <div className="w-full mt-6 overflow-x-hidden">
         <div className="max-w-6xl mx-auto mt-6 p-4">
-          <h1 className="text-2xl font-bold text-center">View Artworks</h1>
+          <h1 className="text-4xl font-bold text-center mb-4">View Artworks</h1>
           {user_type.includes("Creator") && <Post />}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

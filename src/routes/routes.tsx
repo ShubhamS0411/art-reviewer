@@ -1,5 +1,9 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { JSX, lazy, Suspense } from "react";
+import { useContext } from "react";
+import { LogStatus } from "../client /state/Context";
+
+
 
 
 
@@ -9,15 +13,24 @@ const Signin = lazy(() => import("../client /componenets/signin"));
 const Signup = lazy(() => import("../client /componenets/signup"));
 const Dashboard = lazy(() => import("../client /pages/dashboard"));
 const PDP = lazy(() => import("../client /pages/PDP"));
-
+const Footer = lazy(() => import("../client /componenets/footer"));
+const ProfileInfo = lazy(() => import("../client /componenets/profileInfo"));
 export default function Routing(){
-
  
-  const Layout = ({children}: {children: React.ReactNode}) => {
+   const ProtectedRoute = ({children}: {children: JSX.Element}) => {
+     const { status } = useContext(LogStatus);
+     if (!status){
+       return <Navigate to="/signin" />
+     }
+     return children
+   }
+ 
+  const Layout = ({children}: {children: JSX.Element}) => {
     return(
       <>
       <Header/>
       {children}
+      <Footer/>
       </>
     )
   }
@@ -34,6 +47,7 @@ export default function Routing(){
         <Route path="/dashboard" element={<Dashboard /> } />
         <Route path="*" element={<Homepage/>}/>
         <Route path="/post/:id" element={<PDP/>} />
+        <Route path="/profile" element={<ProtectedRoute><ProfileInfo/></ProtectedRoute>}/>
       </Routes>
       </Layout>
       </Suspense>

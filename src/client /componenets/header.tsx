@@ -3,6 +3,7 @@ import { useNavigate, Link} from "react-router-dom";
 import { useContext } from "react";
 import { LogStatus } from "../state/Context";
 import axios from "axios";
+import ProfileIcon from "./profileIcon";
 
 
 
@@ -60,8 +61,11 @@ const Header = function Header() {
                             Signup
                         </button>
                        }
+                       {status && <ProfileIcon/> }
                     </nav>
+                    
                 </div>
+                
             </header>
             
         </>

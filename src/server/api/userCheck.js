@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
+import accountModel from '../models/account.js';
 
-export default function userCheck(req, res) {
+export default async function userCheck(req, res) {
     try{
         const accessToken = req.cookies.accessToken;
         if (!accessToken) {
@@ -8,7 +9,11 @@ export default function userCheck(req, res) {
         }
         const decode = jwt.decode(accessToken);
         const username = decode.sub;
-        res.status(200).json({ message: 'Authorized', username });
+        const userExsists = await accountModel.findOne({ username: username });
+        if(!userExsists){
+             return res.status(401).json({ message: 'Unauthorized' });
+        }
+        res.status(200).json({ message: 'Authorized', username, userExsists });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error checking user' });
