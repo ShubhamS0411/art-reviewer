@@ -12,6 +12,7 @@ import dotenv from 'dotenv';
 import  PDP  from '../api/pdp.js';
 import userCheck from '../api/userCheck.js';
 import { profileEdit } from '../api/profileEdit.js';
+import  similarPost  from '../api/similarPost.js';
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ router.post('/refresh', refreshToken);
 router.get('/getPost', getPosts);
 router.post('/logout', logout);
 router.post('/pdp/:id', PDP);
+router.post('/similarPost', similarPost);
 router.get('/userCheck', userCheck);
 router.post('/upload', upload.single('file'), async(req, res) => {
     

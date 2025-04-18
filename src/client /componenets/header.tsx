@@ -35,7 +35,7 @@ const Header = function Header() {
                 <meta property="og:type" content="website" />
             </Helmet>
           
-            <header className="sticky top-0 bg-gray-900 text-white shadow-lg" aria-label="header">
+            <header className="sticky top-0 z-50 bg-gray-900 text-white shadow-lg" aria-label="header">
                 <div className="container mx-auto px-4 py-4 flex items-center justify-between">
                     <Link to='/'>
                     <h1 className="text-2xl font-bold tracking-tight hover:text-gray-300 cursor-pointer transition-colors">

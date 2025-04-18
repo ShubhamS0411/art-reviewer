@@ -6,6 +6,7 @@ import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
 import { pdpID } from "../state/Context";
 
+
 interface Review {
   username: string;
   review: string;
@@ -29,7 +30,8 @@ export default function PostGrid() {
   const [userCheck, setUserCheck] = useState<string>('');
   const { setId } = useContext(pdpID);
   const API_URL = import.meta.env.VITE_REACT_APP_API_URL || "http://localhost:4000";
-
+  
+  
   useEffect(() => {
     axios
       .get(`${API_URL}/api/getPost`, { withCredentials: true })
@@ -122,14 +124,14 @@ export default function PostGrid() {
                       <audio
                         src={post.file}
                         controls
-                        className="w-full rounded-md mt-2 bg-gray-100 shadow-inner"
+                        className="w-full object-contain h-autorounded-md mt-2 bg-gray-100 shadow-inner"
                       />
                     ) : (
                       <Link to={`/post/${post._id}`} onClick={() => setId(post._id)} target="_blank">
                         <img
                           src={post.file}
                           alt={`Artwork by ${post.user}`}
-                          className="w-full h-auto object-fit rounded-md shadow-sm border"
+                          className="w-full h-auto object-contain rounded-md shadow-sm border"
                           loading="lazy"
                         />
                       </Link>
@@ -159,7 +161,7 @@ export default function PostGrid() {
                 {post.review && post.review.length > 0 && (
                   <div className="w-full mt-4">
                     <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                      Reviews
+                      Reviews ({post.review.length})
                     </h3>
                     <div className="space-y-2 max-h-40 overflow-y-auto bg-gray-50 rounded-md p-2 border border-gray-200">
                       {post.review.map((r, idx) => (

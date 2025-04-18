@@ -39,7 +39,7 @@ export const signin = async(req, res) => {
 
         res.cookie('refreshtoken', refreshToken, {
             httpOnly: true,
-            sameSite: 'none',
+            sameSite: 'strict',
             secure: false,
             maxAge: 7 * 24 * 60 * 60 * 1000,
             
@@ -47,7 +47,7 @@ export const signin = async(req, res) => {
 
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
-            sameSite: 'none',
+            sameSite: 'strict',
             secure: false,
             maxAge: 15 * 60 * 1000,
         });

@@ -67,81 +67,129 @@ export default function ProfileInfo() {
   
 
   return (
-    <div className="flex justify-center items-center flex-col px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Profile Info</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50">
+      <div className="bg-white shadow-2xl rounded-2xl p-10 max-w-lg mx-auto">
+        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-8 text-center">
+          Profile Information
+        </h1>
 
-      <div className="w-full max-w-md border border-gray-300 p-6 space-y-4 shadow-md rounded-md bg-white">
-        {/* Username */}
-        <div className="flex justify-between items-start gap-4">
-          <div className="w-full">
-            <p className="text-sm text-gray-600 mb-1">Username</p> 
-              <p className="text-base font-medium">{profile?.username}</p>
+        <div className="space-y-6">
+          {/* Username */}
+          <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Username</p>
+              <p className="text-lg font-semibold text-gray-900">
+                {profile?.username || "N/A"}
+              </p>
+            </div>
+          </div>
+
+          {/* Email */}
+          <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Email</p>
+              <p className="text-lg font-semibold text-gray-900">
+                {profile?.email || "N/A"}
+              </p>
+            </div>
+          </div>
+
+          {/* UPI */}
+          <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+            <div className="flex-1">
+              <p className="text-sm text-gray-500 font-medium">UPI</p>
+              {!edit.upi ? (
+                <p className="text-lg font-semibold text-gray-900">
+                  {profile?.upi || "Not set"}
+                </p>
+              ) : (
+                <input
+                  type="text"
+                  onChange={(e) => setChange(e.target.value)}
+                  value={change}
+                  placeholder="Enter UPI ID"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800 placeholder-gray-400 transition-colors duration-200"
+                  aria-label="UPI input"
+                />
+              )}
+            </div>
+            <button
+              onClick={() => {
+                setEdit((prev) => ({ ...prev, upi: !prev.upi }));
+                if (edit.upi) handleSubmit();
+              }}
+              className="ml-4 p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              aria-label={edit.upi ? "Save UPI" : "Edit UPI"}
+            >
+              {edit.upi ? (
+                <FaCheck className="w-5 h-5 text-green-600" />
+              ) : (
+                <FaEdit className="w-5 h-5" />
+              )}
+            </button>
+          </div>
+
+          {/* Account Type */}
+          <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Account Type</p>
+              <p className="text-lg font-semibold text-gray-900">
+                {profile?.account_type?.join(", ") || "None"}
+              </p>
+            </div>
+          </div>
+
+          {/* Verification Status */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500 font-medium">
+                Verification Status
+              </p>
+              <p
+                className={`text-lg font-semibold flex items-center gap-2 ${
+                  profile?.isVerified ? "text-green-600" : "text-red-500"
+                }`}
+              >
+                {profile?.isVerified ? (
+                  <>
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Verified
+                  </>
+                ) : (
+                  "Not Verified"
+                )}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Email */}
-        <div>
-          <p className="text-sm text-gray-600 mb-1">Email</p>
-          <p className="text-base font-medium">{profile?.email}</p>
-        </div>
-
-        {/* UPI */}
-        <div className="flex justify-between items-start gap-4">
-          <div className="w-full">
-            <p className="text-sm text-gray-600 mb-1">UPI</p>
-            {!edit.upi ? (
-              <p className="text-base font-medium">{profile?.upi}</p>
-            ) : (
-              <input
-                type="text"
-                onChange={(e) =>
-                  setChange(e.target.value)
-                }
-                value={change}
-                placeholder="Enter UPI"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-              />
+        {/* Error / Success Messages */}
+        {(error.error || error.success) && (
+          <div className="mt-6 p-4 rounded-lg shadow-sm text-center">
+            {error.error && (
+              <p className="text-sm text-red-500">{error.error}</p>
+            )}
+            {error.success && (
+              <p className="text-sm text-green-500">{error.success}</p>
             )}
           </div>
-          <button
-            onClick={() => {
-              setEdit((prev) => ({ ...prev, upi: !prev.upi }));
-              
-            }}
-            className="mt-6 text-xl hover:bg-gray-100 rounded px-2 py-1 transition"
-          
-          >
-            {edit.upi ? (
-              <FaCheck onClick={handleSubmit}/>
-            ) : (
-              <FaEdit />
-            )}
-          </button>
-        </div>
+        )}
 
-        {/* Account Type */}
-        <div>
-          <p className="text-sm text-gray-600 mb-1">Account Type</p>
-          <p className="text-base font-medium">{profile?.account_type.map((item) => item + " " )}</p>
-        </div>
-
-        {/* Verification Status */}
-        <div>
-          <p className="text-sm text-gray-600 mb-1">Verification Status</p>
-          <p
-            className={`text-base font-semibold ${
-              profile?.isVerified ? "text-green-600" : "text-red-500"
-            }`}
-          >
-            {profile?.isVerified ? "Verified" : "Not Verified"}
-          </p>
-        </div>
-
-        {/* Error / Success */}
-        {error.error && <p className="text-sm text-red-500">{error.error}</p>}
-        {error.success && <p className="text-sm text-green-500">{error.success}</p>}
+        <p className="text-sm text-gray-500 mt-6 text-center">
+          Note: You can only edit your UPI ID at this time.
+        </p>
       </div>
-      <p className="text-gray mt-2 text-gray-500">Note: You Can Only Change UPI For Now</p>
     </div>
   );
 }
