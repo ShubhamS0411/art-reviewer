@@ -6,10 +6,12 @@ import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
 import { pdpID } from "../state/Context";
 
-
 interface Review {
   username: string;
   review: string;
+  account: {
+    isVerified: boolean;
+  }
 }
 interface Post {
   description: string;
@@ -19,6 +21,9 @@ interface Post {
   content: string;
   file: string;
   review?: Review[];
+  account: {
+    isVerified: boolean;
+  };
 }
 
 export default function PostGrid() {
@@ -30,8 +35,7 @@ export default function PostGrid() {
   const [userCheck, setUserCheck] = useState<string>('');
   const { setId } = useContext(pdpID);
   const API_URL = import.meta.env.VITE_REACT_APP_API_URL || "http://localhost:4000";
-  
-  
+
   useEffect(() => {
     axios
       .get(`${API_URL}/api/getPost`, { withCredentials: true })
@@ -44,12 +48,10 @@ export default function PostGrid() {
       .catch((error) => {
         console.error("Error fetching posts:", error);
       });
-
-    
   }, [trigger]);
 
-    useEffect(() => {
-      axios.get(`${API_URL}/api/userCheck`, { withCredentials: true })
+  useEffect(() => {
+    axios.get(`${API_URL}/api/userCheck`, { withCredentials: true })
       .then((res) => {
         if (res.status === 200) {
           setUserCheck(res.data.username);
@@ -58,7 +60,7 @@ export default function PostGrid() {
       .catch((error) => {
         console.error("Error fetching posts:", error);
       });
-    },[]);
+  }, []);
 
   const handleSubmit = useCallback(
     (event: React.FormEvent, index: number) => {
@@ -89,6 +91,9 @@ export default function PostGrid() {
     setReview((prev) => ({ ...prev, [index]: event.target.value }));
   };
 
+
+  
+
   return (
     <>
       <Helmet>
@@ -112,9 +117,22 @@ export default function PostGrid() {
             {postCollection.map((post, index) => (
               <article
                 key={index}
-                className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 flex flex-col items-start space-y-4 h-auto"
+                className={
+                  post.account.isVerified
+                    ? "bg-gradient-to-r from-orange-700 to-gray-950 text-white p-6 rounded-lg shadow-lg border border-gray-200 flex flex-col items-start space-y-4 h-auto transform hover:scale-105 transition-transform duration-300"
+                    : "bg-white p-6 rounded-lg shadow-lg border border-gray-200 flex flex-col items-start space-y-4 h-auto"
+                }
               >
-                <div className="self-center bg-gray-200 px-4 py-2 rounded-full shadow-sm text-center font-semibold text-gray-800 text-lg">
+                {post.account.isVerified && (
+                  <div className="absolute top-2 left-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
+                   Verified
+                  </div>
+                )}
+                <div className={
+                  post.account.isVerified
+                    ? "self-center bg-opacity-50 bg-white px-4 py-2 rounded-full shadow-sm text-center font-semibold text-gray-800 text-lg"
+                    : "self-center bg-gray-200 px-4 py-2 rounded-full shadow-sm text-center font-semibold text-gray-800 text-lg"
+                }>
                   {post.user}
                 </div>
 
@@ -124,7 +142,7 @@ export default function PostGrid() {
                       <audio
                         src={post.file}
                         controls
-                        className="w-full object-contain h-autorounded-md mt-2 bg-gray-100 shadow-inner"
+                        className="w-full object-contain h-auto rounded-md mt-2 bg-gray-100 shadow-inner"
                       />
                     ) : (
                       <Link to={`/post/${post._id}`} onClick={() => setId(post._id)} target="_blank">
@@ -140,15 +158,19 @@ export default function PostGrid() {
                 )}
 
                 <Link to={`/post/${post._id}`} onClick={() => setId(post._id)} target="_blank">
-                  <h2 className="text-xl font-bold text-gray-900 w-full break-words text-center mt-2">
+                  <h2 className={post.account.isVerified ? "text-2xl font-bold text-white w-full break-words  text-center mt-2" : "text-xl font-bold text-black w-full break-words text-center mt-2"}>
                     {post.content}
                   </h2>
 
-                  <p className="text-gray-700 text-sm w-full text-left mt-2">
+                  <p className={
+                    post.account.isVerified
+                      ? "text-gray-200 text-sm w-auto text-left mt-2"
+                      : "text-gray-700 text-sm w-full text-left mt-2"
+                  }>
                     {post.description && post.description.length > 100 ? (
                       <>
                         {post.description.substring(0, 100)}
-                        <button className="ml-2 bg-gray-200 hover:bg-gray-300 font-semibold text-sm py-0.5 px-1 rounded-md shadow-md transition duration-300 ease-in-out">
+                        <button className="ml-1 hover:scale-105 font-semibold text-sm  px-1 underline rounded-xl shadow-md transition duration-300 ease-in-out truncate w-20">
                           Explore More
                         </button>
                       </>
@@ -160,20 +182,43 @@ export default function PostGrid() {
 
                 {post.review && post.review.length > 0 && (
                   <div className="w-full mt-4">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                    <h3 className={
+                      post.account.isVerified
+                        ? "text-lg font-semibold text-gray-100 mb-2"
+                        : "text-lg font-semibold text-gray-800 mb-2"
+                    }>
                       Reviews ({post.review.length})
                     </h3>
                     <div className="space-y-2 max-h-40 overflow-y-auto bg-gray-50 rounded-md p-2 border border-gray-200">
                       {post.review.map((r, idx) => (
                         <div
-                          key={idx}
-                          className="bg-white p-3 rounded-md shadow-sm border border-gray-300"
-                        >
-                          <p className="text-sm font-semibold text-gray-900">
-                            {r.username}
-                          </p>
-                          <p className="text-sm text-gray-700">{r.review}</p>
-                        </div>
+                        key={idx}
+                        className={
+                          r.account?.isVerified
+                            ? "bg-gradient-to-r from-orange-700 to-gray-950 text-white p-3 rounded-md shadow-lg border border-gray-200 transform hover:scale-105 transition-transform duration-300"
+                            : "bg-white p-3 rounded-md shadow-sm border border-gray-300"
+                        }
+                      >
+                        {r.account?.isVerified && (
+                          <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
+                            Verified
+                          </div>
+                        )}
+                        <p className={
+                          r.account?.isVerified
+                            ? "text-sm font-semibold text-gray-100 underline"
+                            : "text-sm font-semibold text-gray-900 underline"
+                        }>
+                          @{r.username}
+                        </p>
+                        <p className={
+                          r.account?.isVerified
+                            ? "text-sm text-gray-200"
+                            : "text-sm text-gray-700"
+                        }>
+                          {r.review}
+                        </p>
+                      </div>
                       ))}
                     </div>
                   </div>

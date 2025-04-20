@@ -9,9 +9,11 @@ const commentSchema = new mongoose.Schema({
     review: [
         {
             username: { type: String, required: true },
-            review: { type: String, required: true }
+            review: { type: String, required: true },
+            account: {type: mongoose.Schema.Types.ObjectId, ref: 'Account', required: true}
         }
-    ]
+    ],
+    account: {type: mongoose.Schema.Types.ObjectId, ref: 'Account', required: true},
 },{timestamps: true});
 
 const commentModel = mongoose.model('Comment', commentSchema);

@@ -7,11 +7,14 @@ const SimilarPost = lazy(() => import("../componenets/similarPost"));
 interface Review {
   username: string;
   review: string;
+  account: {
+    isVerified: boolean;
+  };
 }
 
 interface Post {
   _id: string;
-  title: string;
+  content: string;
   description: string;
   file: string;
   user: string;
@@ -107,7 +110,7 @@ export default function PDP() {
         <div className="flex flex-col md:flex-row justify-between items-start gap-6">
           <div className="space-y-3">
             <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-              {data.title || "Untitled Post"}
+              {data.content || "Untitled Post"}
             </h1>
             <div className="flex items-center gap-3">
               <p className="text-sm text-gray-500">
@@ -158,7 +161,7 @@ export default function PDP() {
             ) : (
               <img
                 src={data.file}
-                alt={data.title || `Artwork by ${data.user}`}
+                alt={data.content || `Artwork by ${data.user}`}
                 className="w-full max-h-fit object-contain rounded-xl transition-transform duration-300 hover:scale-[1.02]"
                 loading="lazy"
               />
@@ -200,13 +203,30 @@ export default function PDP() {
               {comments.map((comment, index) => (
                 <li
                   key={index}
-                  className="bg-white border border-gray-100 p-6 rounded-xl shadow-sm transition-shadow duration-300 hover:shadow-md"
+                  className={
+                    comment.account?.isVerified
+                      ? "bg-gradient-to-r from-orange-700 to-black text-white border border-gray-200 p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 relative"
+                      : "bg-white border border-gray-100 p-6 rounded-xl shadow-sm transition-shadow duration-300 hover:shadow-md"
+                  }
                 >
-                  <p className="text-sm text-gray-700">
-                    <span className="font-semibold text-gray-900">
-                      {comment.username}
-                    </span>
-                    <span className="text-gray-500"> • {comment.review}</span>
+                  {comment.account?.isVerified && (
+                    <div className="absolute top-4 right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
+                      Verified
+                    </div>
+                  )}
+                  <p className={
+                    comment.account?.isVerified
+                      ? "text-sm font-semibold text-gray-100 underline"
+                      : "text-sm font-semibold text-gray-900 underline"
+                  }>
+                    @{comment.username}
+                  </p>
+                  <p className={
+                    comment.account?.isVerified
+                      ? "text-sm text-gray-200"
+                      : "text-sm text-gray-700"
+                  }>
+                    {comment.review}
                   </p>
                 </li>
               ))}

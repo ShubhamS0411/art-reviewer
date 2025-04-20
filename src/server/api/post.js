@@ -15,6 +15,7 @@ export async function createPost (req,res){
     const decoded = jwt.decode(accessToken);
     const username = decoded.sub;
     
+    
     if(!content){
         return res.status(400).json({message: "Content is required"});
     }
@@ -41,8 +42,8 @@ export async function createPost (req,res){
     if(!userExsists){
         return res.status(400).json({message: "User does not exist"});
     }
-    
-    const newPost = new postModel({ content: updatedContent, description: updatedDescription, user: userExsists.username, file: file, category: category});
+
+    const newPost = new postModel({ content: updatedContent, description: updatedDescription, user: userExsists.username, file: file, category: category, account: userExsists._id });
     await newPost.save();
     res.status(201).json({message: "Post Created Successfully, Wait For Page To Refresh"});
     }
@@ -63,7 +64,9 @@ export async function createPost (req,res){
       const role = decoded.role;
       
       //const fiveSecond = new Date(Date.now() - 100000);
-      const posts = await postModel.find({}).sort({ createdAt: -1 });
+      const posts = await postModel.find({}).populate('account', 'isVerified').populate('review.account', 'isVerified').sort({ createdAt: -1 });
+
+      
       res.status(200).json({ posts, role });
     } catch (error) {
       console.error(error);

@@ -1,4 +1,5 @@
 import postModel from "../models/post.js";
+import accountModel from "../models/account.js";
 import jwt from "jsonwebtoken";
 
 export default async function createReview (req,res){
@@ -13,17 +14,19 @@ export default async function createReview (req,res){
         const accessToken = req.cookies.accessToken;
         const decode = jwt.decode(accessToken);
         const username = decode.sub;
+        const userExsists = await accountModel.findOne({ username: username });
     
         if(!accessToken){
             return res.status(401).json({message: "Unauthorized"});
         }
         const post = await postModel.findOneAndUpdate({ _id: post_id },   { 
             $push: { 
-                review: { username: username, review: sanitizedReview } 
+                review: { username: username, review: sanitizedReview, account: userExsists._id} 
+                
             } 
         },
         { new: true }
-    );
+    ).populate('review.account', 'isVerified');
         res.status(201).json({message: "Review Created Successfully", post});
     
 }
