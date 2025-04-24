@@ -58,18 +58,19 @@ export async function createPost (req,res){
       const accessToken = req.cookies.accessToken;
       
       if (!accessToken) {
-        return res.status(401).json({ message: 'Unauthorized' });
+        const newPost = await postModel.find({}).populate('account', 'isVerified').populate('review.account', 'isVerified').sort({ createdAt: -1 }).limit(4);
+        return res.status(200).json({message: "Guest User", newPost });
       }
       const decoded = jwt.decode(accessToken);
       const role = decoded.role;
-      
-      //const fiveSecond = new Date(Date.now() - 100000);
       const posts = await postModel.find({}).populate('account', 'isVerified').populate('review.account', 'isVerified').sort({ createdAt: -1 });
-
+      const newPost = await postModel.find({}).populate('account', 'isVerified').populate('review.account', 'isVerified').sort({ createdAt: -1 }).limit(4);
       
-      res.status(200).json({ posts, role });
+      
+      res.status(200).json({ posts, role, newPost });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error fetching posts' });
     }
+    
   }

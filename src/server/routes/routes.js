@@ -38,7 +38,7 @@ router.post('/post',rateLimiter2, express.json({ limit: '50mb'}), createPost);
 router.post('/review',rateLimiter2,express.json({ limit: '1mb'}), createReview);
 router.post('/profileEdit',express.json({ limit: '1mb'}), profileEdit);
 router.get('/authentication', Authentication);
-router.post('/refresh', refreshToken);
+router.get('/refresh', refreshToken);
 router.get('/getPost', getPosts);
 router.post('/logout', logout);
 router.post('/pdp/:id', PDP);
